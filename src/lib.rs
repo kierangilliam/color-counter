@@ -22,7 +22,7 @@ pub fn substring(string: String, start: usize, end: usize) -> String {
 // #[wasm_bindgen] implied
 #[derive(Deserialize)]
 pub struct ColorCounter {
-    image_data: Vec<u8>,
+    data: Vec<u8>,
     colors: HashMap<String, [u8; 3]>,
 }
 
@@ -76,15 +76,31 @@ impl ColorCounter {
     pub fn calculate(self) -> ColorCounterResult {
         let mut count: HashMap<usize, u32> = HashMap::new();
         let mut result: HashMap<String, u32> = HashMap::new();
-        // Why does colors have to be mut?
-        let mut colors = self.colors.iter().map(|(_name, rgb)| (rgb));
 
-        for chunk in self.image_data.chunks(4) {
+        for chunk in self.data.chunks(4) {
             let rgb_chunk = utils::rgb(chunk);
 
-            match colors.position(|rgb| rgb_chunk[0] == rgb[0]) {
-                Some(index) => *count.entry(index).or_insert(0) += 1, //count.insert(index, 100),
-                None => *count.entry(usize::MAX).or_insert(0) += 1, // count.insert(usize::MAX, 100),
+            log!("chunk {:?}", rgb_chunk);
+            for (name, color) in self.colors.iter() {
+                log!("name {} color: {:?}", name, color);
+                log!(
+                    "chunk {:?} === {:?} : {}",
+                    rgb_chunk,
+                    color,
+                    (*color as [u8; 3]) == (rgb_chunk as [u8; 3])
+                );
+            }
+
+            match self
+                .colors
+                .iter()
+                .position(|(_name, color)| (*color as [u8; 3]) == (rgb_chunk as [u8; 3]))
+            {
+                Some(index) => *count.entry(index).or_insert(0) += 1,
+                None => {
+                    log!("none");
+                    *count.entry(usize::MAX).or_insert(0) += 1
+                }
             };
         }
 
