@@ -80,27 +80,13 @@ impl ColorCounter {
         for chunk in self.data.chunks(4) {
             let rgb_chunk = utils::rgb(chunk);
 
-            log!("chunk {:?}", rgb_chunk);
-            for (name, color) in self.colors.iter() {
-                log!("name {} color: {:?}", name, color);
-                log!(
-                    "chunk {:?} === {:?} : {}",
-                    rgb_chunk,
-                    color,
-                    (*color as [u8; 3]) == (rgb_chunk as [u8; 3])
-                );
-            }
-
             match self
                 .colors
                 .iter()
                 .position(|(_name, color)| (*color as [u8; 3]) == (rgb_chunk as [u8; 3]))
             {
                 Some(index) => *count.entry(index).or_insert(0) += 1,
-                None => {
-                    log!("none");
-                    *count.entry(usize::MAX).or_insert(0) += 1
-                }
+                None => *count.entry(usize::MAX).or_insert(0) += 1,
             };
         }
 
