@@ -10,6 +10,7 @@ ctx.fillRect(0, 0, canvas.width / 2, canvas.height / 2);
 
 
 button.addEventListener('click', () => {
+    console.log('Buffer size', canvas.width * canvas.height)
     console.time('calc')
 
     const image = ctx.getImageData(0, 0, canvas.width, canvas.height)

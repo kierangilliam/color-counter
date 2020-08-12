@@ -8,16 +8,6 @@ use std::collections::HashMap;
 use std::u8;
 use wasm_bindgen::prelude::*;
 
-macro_rules! log {
-    ( $( $t:tt )* ) => {
-        web_sys::console::log_1(&format!( $( $t )* ).into());
-    }
-}
-
-pub fn substring(string: String, start: usize, end: usize) -> String {
-    return string.chars().skip(start).take(start - end).collect();
-}
-
 // #[wasm_bindgen] implied
 #[derive(Deserialize)]
 pub struct ColorCounter {
@@ -51,6 +41,8 @@ impl ColorCounter {
         let mut count: HashMap<usize, u32> = HashMap::new();
         let mut result: HashMap<String, u32> = HashMap::new();
 
+        // utils::time("calculate");
+
         for chunk in self.data.chunks_exact(4) {
             let rgb_chunk = utils::rgb(chunk);
 
@@ -74,6 +66,8 @@ impl ColorCounter {
             Some(value) => result.insert("unknown".to_string(), *value),
             None => result.insert("unknown".to_string(), 0),
         };
+
+        // utils::timeEnd("calculate");
 
         return ColorCounterResult { count: result };
     }
