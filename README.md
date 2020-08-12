@@ -1,26 +1,51 @@
-### 🛠️ Build with `wasm-pack build`
+### Usage
+```
+<canvas id="canvas" width="3000" height="1500"></canvas>
+```
+
+```
+import { calculate } from 'color-counter'
+
+const canvas = document.getElementById('canvas')
+const ctx = canvas.getContext('2d')
+
+// Fill 1/4th of canvas with red
+ctx.fillStyle = 'red'
+ctx.fillRect(0, 0, canvas.width / 2, canvas.height / 2)
+
+const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height)
+
+const { count } = calculate({
+    data: Array.from(data),
+    colors: {
+        red: [255, 0, 0],
+        white: [0, 0, 0],
+    }
+})
+
+// {"white": 3375000, "red": 1125000, "unknown": 0}
+console.log(count)
+```
+
+### Disclaimer
+
+First time ever using rust or wasm so this is definitely the worst way to do this.
+
+### Build
 
 ```
 wasm-pack build
 ```
 
-### 🔬 Test in Headless Browsers with `wasm-pack test`
+### Test
 
 ```
 wasm-pack test --headless --firefox
 ```
 
-### 🎁 Publish to NPM with `wasm-pack publish`
+### Publish
 
 ```
 wasm-pack publish
 ```
 
-## 🔋 Batteries Included
-
-* [`wasm-bindgen`](https://github.com/rustwasm/wasm-bindgen) for communicating
-  between WebAssembly and JavaScript.
-* [`console_error_panic_hook`](https://github.com/rustwasm/console_error_panic_hook)
-  for logging panic messages to the developer console.
-* [`wee_alloc`](https://github.com/rustwasm/wee_alloc), an allocator optimized
-  for small code size.
