@@ -12,14 +12,16 @@ ctx.fillRect(0, 0, canvas.width / 2, canvas.height / 2);
 button.addEventListener('click', () => {
     console.time('calc')
 
-    const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height)
+    const image = ctx.getImageData(0, 0, canvas.width, canvas.height)
 
-    console.log(data)
+    console.time('array from')
+    const data = Array.from(image.data)
+    console.timeEnd('array from')
 
     const { count } = calculate({
-        data,//ctx.getImageData(0, 0, canvas.width, canvas.height),
+        data,
         colors: {
-            red: [255, 0, 0], //'#ff0000',
+            red: [255, 0, 0],
             white: [0, 0, 0],
         }
     })
